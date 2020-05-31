@@ -59,7 +59,7 @@ namespace Engine.Models
             }
         }
         public int Gold 
-        {   get { return _gold}
+        {   get { return _gold; }
             set 
             {
                 _gold = value;
