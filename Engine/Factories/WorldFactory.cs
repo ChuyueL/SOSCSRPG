@@ -7,9 +7,13 @@ using Engine.Models;
 
 namespace Engine.Factories
 {
-    internal class WorldFactory //internal class means can only use within project, actually internal by default
+    //static factory is globally available, don't need to create an instance.
+    //Static class to create an object = factory design pattern (static class is a factory)
+    //If a class is static, all its private class-level variables and functions must be static
+    //Could also have static functions in instanced classes.
+    internal static class WorldFactory //internal class means can only use within project, actually internal by default
     {
-        internal World CreateWorld()
+        internal static World CreateWorld()
         {
             World newWorld = new World();
 

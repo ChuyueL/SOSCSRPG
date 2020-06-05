@@ -102,7 +102,30 @@
                 </Grid>
             </Border>
         </Grid>
-        <Label Grid.Row="2" Grid.Column="0" Content="Inventory/Quests" Background="BurlyWood"/>
+
+        <Grid Grid.Row="2" Grid.Column="0" Background="Burlywood">
+            <TabControl>
+                <TabItem Header="Inventory">
+                    
+                    <!-- DataGrid used for displaying lists of items, allows scrolling etc 
+                    AutoGenerateColumns = false means we generate our own columns -->
+                    <DataGrid ItemSource="{Binding CurrentPlayer.Inventory}"
+                              AutoGenerateColumns="False"
+                              HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Description"
+                                                Binding="{Binding Name}"
+                                                Width="*"/>
+
+                            <DataGridTextColumn Header="Price"
+                                                Binding="{Binding Price}"
+                                                Width="Auto"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+            </TabControl>
+        </Grid>
+        
         <Label Grid.Row="2" Grid.Column="1" Content="Combat/Movement Controls" Background="Lavender"/>
 
         <Grid Grid.Row="2" Grid.Column="1" Background="Lavender">
