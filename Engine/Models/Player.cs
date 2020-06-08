@@ -71,10 +71,17 @@ namespace Engine.Models
 
         //ObservableCollection handles all the notifications
         public ObservableCollection<GameItem> Inventory { get; set; }
+        public ObservableCollection<QuestStatus> Quests { get; set; }
 
         public Player()
         {
             Inventory = new ObservableCollection<GameItem>();
+
+            //When player moves to a new location, check whether location has any quests.
+            //Then check if player doesn't have quests from that location yet.
+            //Any quest player doesn't have yet will be added to Quests.
+            //This is done inside GameSession.
+            Quests = new ObservableCollection<QuestStatus>();
         }
     }
 }

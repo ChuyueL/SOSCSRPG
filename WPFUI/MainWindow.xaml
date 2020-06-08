@@ -109,7 +109,7 @@
                     
                     <!-- DataGrid used for displaying lists of items, allows scrolling etc 
                     AutoGenerateColumns = false means we generate our own columns -->
-                    <DataGrid ItemSource="{Binding CurrentPlayer.Inventory}"
+                    <DataGrid ItemsSource="{Binding CurrentPlayer.Inventory}"
                               AutoGenerateColumns="False"
                               HeadersVisibility="Column">
                         <DataGrid.Columns>
@@ -119,6 +119,27 @@
 
                             <DataGridTextColumn Header="Price"
                                                 Binding="{Binding Price}"
+                                                Width="Auto"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </TabItem>
+
+                <TabItem Header="Quests">
+                    <DataGrid ItemsSource="{Binding CurrentPlayer.Quests}"
+                              AutoGenerateColumns="False"
+                              HeadersVisibility="Column">
+                        <DataGrid.Columns>
+                            <!-- Binding to a property of a property of an object. 
+                            CurrentPlayer is within GameSession and has a property called Quests,
+                            containing QuestStatus objects. QuestStatus has a property PlayerQuest of type Quest,
+                            which has a property Name.
+                            We're binding to PlayerQuest property of Quests, and displaying Name of PlayerQuest object. -->
+                            <DataGridTextColumn Header="Name"
+                                                Binding="{Binding PlayerQuest.Name}"
+                                                Width="*"/>
+
+                            <DataGridTextColumn Header="Done?"
+                                                Binding="{Binding IsCompleted}"
                                                 Width="Auto"/>
                         </DataGrid.Columns>
                     </DataGrid>
