@@ -71,6 +71,12 @@ namespace Engine.Models
 
         //ObservableCollection handles all the notifications
         public ObservableCollection<GameItem> Inventory { get; set; }
+
+        //Where is basically Filter
+        //deferred execution - waits to execute the LINQ query until it is really needed,
+        //ToList forces it to be needed
+        public List<GameItem> Weapons =>
+            Inventory.Where(i => i is Weapon).ToList();
         public ObservableCollection<QuestStatus> Quests { get; set; }
 
         public Player()
@@ -82,6 +88,12 @@ namespace Engine.Models
             //Any quest player doesn't have yet will be added to Quests.
             //This is done inside GameSession.
             Quests = new ObservableCollection<QuestStatus>();
+        }
+
+        public void AddItemToInventory(GameItem item)
+        {
+            Inventory.Add(item);
+            OnPropertyChanged(nameof(Weapons));
         }
     }
 }

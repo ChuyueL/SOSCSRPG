@@ -36,6 +36,13 @@ namespace Engine.Factories
             //create a copy of the object (cloning), to allow unique individual objects
             if (standardItem != null)
             {
+                //If item is a weapon, then we want Clone() fn of Weapon class, to include
+                //the extra weapon information
+                if (standardItem is Weapon)
+                {
+                    //cast item as Weapon and call its clone function
+                    return (standardItem as Weapon).Clone();
+                }
                 return standardItem.Clone();
             }
 

@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Engine.EventArgs;
 using Engine.ViewModels;
 
 namespace WPFUI
@@ -27,6 +28,9 @@ namespace WPFUI
             InitializeComponent();
 
             _gameSession = new GameSession();
+
+            //OnGameMessageRaised is a function to handle the event 
+            _gameSession.OnMessageRaised += OnGameMessageRaised;
 
             DataContext = _gameSession; //DataContext is built in property for xaml window
 
@@ -49,6 +53,20 @@ namespace WPFUI
         private void OnClick_MoveSouth(object sender, RoutedEventArgs e)
         {
             _gameSession.MoveSouth();
+        }
+
+        private void OnClick_AttackMonster(object sender, RoutedEventArgs e)
+        {
+            _gameSession.AttackCurrentMonster();
+        }
+        private void OnGameMessageRaised(object sender, GameMessageEventArgs e)
+        {
+            //Add a new block, which is a paragraph that contains a run (string of text)
+            //with the message to the rich text box.
+            GameMessages.Document.Blocks.Add(new Paragraph(new Run(e.Message)));
+
+            //Scroll to end of rich text box as we want player to always see the last messages.
+            GameMessages.ScrollToEnd();
         }
     }
 }

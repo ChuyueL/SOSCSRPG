@@ -4,9 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPFUI"
+        xmlns:viewModels="clr-namespace:Engine.ViewModels;assembly=Engine"
+        d:DataContext="{d:DesignInstance viewModels:GameSession}"
         mc:Ignorable="d"
         FontSize="11pt"
-        Title="MainWindow" Height="768" Width="1024">
+        Title="Chuyue's RPG" Height="768" Width="1024">
 
     <!-- Converts from boolean value to button visibility value, built-in function 
     True = visibible, False = hidden -->
@@ -27,8 +29,11 @@
             <ColumnDefinition Width="250"></ColumnDefinition>
             <ColumnDefinition Width="*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-
+        
+        <!-- Menu -->
         <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Content="Menu" Background="AliceBlue"/>
+        
+        <!-- Player stats -->
         <Grid Grid.Row="1" Grid.Column="0" Background="Aquamarine">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -58,6 +63,7 @@
             <Label Grid.Row="5" Grid.Column="1" Content="{Binding CurrentPlayer.Level}"/>
         </Grid>
 
+        <!-- Gameplay -->
         <Grid Grid.Row="1" Grid.Column="1" Background="Beige">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
@@ -70,6 +76,25 @@
                 <ColumnDefinition Width="2*"/>
             </Grid.ColumnDefinitions>
             
+            <!-- Game Messages -->
+            <Border Grid.Row="0" Grid.Column="0"
+                    Grid.RowSpan="2"
+                    BorderBrush="Gainsboro"
+                    BorderThickness="1">
+
+                <RichTextBox x:Name="GameMessages"
+                             Background="Beige"
+                             VerticalScrollBarVisibility="Auto">
+                    <!-- Set style of paragraph to have margin of 0. Avoids lots of space between lines-->
+                    <RichTextBox.Resources>
+                        <Style TargetType="{x:Type Paragraph}">
+                            <Setter Property="Margin" Value="0"/>
+                        </Style>
+                    </RichTextBox.Resources>
+                </RichTextBox>
+            </Border>
+            
+            <!-- Location information -->
             <!--Only one column in this grid so don't need to set up the grid columndefinitions -->
             <Border Grid.Row="0" Grid.Column="1" 
                     BorderBrush="Gainsboro" BorderThickness="1">
@@ -101,8 +126,49 @@
                                TextWrapping="Wrap"/>
                 </Grid>
             </Border>
+            
+            <!-- Monster information-->
+            <Border Grid.Row="1" Grid.Column="1" 
+                    BorderBrush="Gainsboro"
+                    BorderThickness="1">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <!-- Monster name -->
+                        <RowDefinition Height="*" />
+                        <!-- image -->
+                        <RowDefinition Height="Auto" />
+                        <!-- hit points -->
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0"
+                           HorizontalAlignment="Center"
+                           Height="Auto"
+                           Text="{Binding CurrentMonster.Name}" />
+
+                    <Image Grid.Row="1"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Center"
+                           Height="125"
+                           Width="125"
+                           Source="{Binding CurrentMonster.ImageName}" />
+
+                    <!-- Way to put 2 text blocks on the same row
+                    Orientational="Vertical" puts 2 text blocks on same row -->
+                    <StackPanel Grid.Row="2"
+                                Visibility="{Binding HasMonster, Converter={StaticResource BooleanToVisibility}}"
+                                HorizontalAlignment="Center"
+                                Orientation="Horizontal">
+                        <TextBlock>Current Hit Points:</TextBlock>
+                        <TextBlock Text="{Binding CurrentMonster.HitPoints}" />
+                    </StackPanel>
+                </Grid>
+
+            </Border>
         </Grid>
 
+        <!-- Inventory and Quests -->
         <Grid Grid.Row="2" Grid.Column="0" Background="Burlywood">
             <TabControl>
                 <TabItem Header="Inventory">
@@ -146,9 +212,8 @@
                 </TabItem>
             </TabControl>
         </Grid>
-        
-        <Label Grid.Row="2" Grid.Column="1" Content="Combat/Movement Controls" Background="Lavender"/>
 
+        <!-- Action controls -->
         <Grid Grid.Row="2" Grid.Column="1" Background="Lavender">
             
             <Grid.RowDefinitions>
@@ -162,7 +227,34 @@
                 <ColumnDefinition Width="255"/>
             </Grid.ColumnDefinitions>
 
-            <!-- grid for the movement buttons -->
+            <!-- Combat Controls -->
+            <Grid Grid.Row="0" Grid.Column="0"
+                  Visibility="{Binding HasMonster, Converter={StaticResource BooleanToVisibility}}"
+                  HorizontalAlignment="Center"
+                  VerticalAlignment="Center">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="10"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+
+                <ComboBox Grid.Row="0" Grid.Column="0"
+                          ItemsSource="{Binding CurrentPlayer.Weapons}"
+                          SelectedItem="{Binding CurrentWeapon}"
+                          DisplayMemberPath="Name"
+                          SelectedValuePath="ID" />
+
+                <Button Grid.Row="0" Grid.Column="2"
+                        Content="Use"
+                        Click="OnClick_AttackMonster"/>
+            </Grid>
+            
+            <!-- Movement Controls -->
             <Grid Grid.Row="0" Grid.Column="1">
 
                 <Grid.RowDefinitions>
