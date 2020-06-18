@@ -22,12 +22,11 @@ namespace WPFUI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private GameSession _gameSession;
+        //readonly because only want to set value when declaring variable or in the constructor.
+        private readonly GameSession _gameSession = new GameSession();
         public MainWindow()
         {
             InitializeComponent();
-
-            _gameSession = new GameSession();
 
             //OnGameMessageRaised is a function to handle the event 
             _gameSession.OnMessageRaised += OnGameMessageRaised;

@@ -95,5 +95,32 @@ namespace Engine.Models
             Inventory.Add(item);
             OnPropertyChanged(nameof(Weapons));
         }
+
+        public void RemoveItemFromInventory(GameItem item)
+        {
+            Inventory.Remove(item);
+
+            //In case we've removed a weapon from the player's inventory, need to notify UI
+            OnPropertyChanged(nameof(Weapons));
+        }
+
+        public bool HasAllTheseItems(List<ItemQuantity> items)
+        {
+            foreach (ItemQuantity item in items)
+            {
+                //Count how many items player has in their inventory where the ItemID matches.
+                //If the count is less than the count of the passed in parameter, return false 
+                //as player does not have enough items.
+                if (Inventory.Count(i => i.ItemTypeID == item.ItemID) < item.Quantity)
+                {
+                    return false;
+                }
+
+            }
+
+            //If we get through all the items in the list and we haven't returned false for any,
+            //player has enough items so return true.
+            return true;
+        }
     }
 }

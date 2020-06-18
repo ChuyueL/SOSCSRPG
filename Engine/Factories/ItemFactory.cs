@@ -9,14 +9,14 @@ namespace Engine.Factories
 {
     public static class ItemFactory
     {
-        private static List<GameItem> _standardGameItems;
+        //readonly = variable can only be set in declaration or in a constructor
+        //Protects us from accidentally setting the value somewhere else.
+        private static readonly List<GameItem> _standardGameItems = new List<GameItem>();
 
         //The first time anyone uses anything in ItemFactory class, run this function.
         //Loads up list of game items.
         static ItemFactory()
-        {
-            _standardGameItems = new List<GameItem>();
-
+        {          
             _standardGameItems.Add(new Weapon(1001, "Pointy Stick", 1, 1, 2));
             _standardGameItems.Add(new Weapon(1002, "Rusty Sword", 5, 1, 3));
             _standardGameItems.Add(new GameItem(9001, "Snake fang", 1));
