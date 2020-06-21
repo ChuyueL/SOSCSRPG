@@ -67,5 +67,19 @@ namespace WPFUI
             //Scroll to end of rich text box as we want player to always see the last messages.
             GameMessages.ScrollToEnd();
         }
+
+        private void OnClick_DisplayTradeScreen(object sender, RoutedEventArgs e)
+        {
+            TradeScreen tradeScreen = new TradeScreen(); //instantiates a new TradeScreen window
+            tradeScreen.Owner = this; //allows us to center the trade screen on the main window
+            //Doesn't actually pass the _gameSession object, passes a reference to the object. The actual object
+            //only exists in one place and any other place that uses it points to that same place in memory. 
+            //Any changes we make to _gameSession in TradeScreen happen to this one _gameSession object.
+            tradeScreen.DataContext = _gameSession; 
+            //Could use Show() but it displays it in a nonmodal way (user would still be able to click on buttons
+            //on MainWindow. ShowDialog() means that TradeScreen is modal - locks everything else in UI out so user
+            //can't click on MainWindow.
+            tradeScreen.ShowDialog();
+        }
     }
 }
