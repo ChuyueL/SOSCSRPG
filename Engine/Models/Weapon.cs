@@ -12,8 +12,9 @@ namespace Engine.Models
         public int MaximumDamage { get; set; }
         //when we instantiate a weapon object, it takes the values we passed in and sends them to the base class.
         //This sets the properties.
+        //All weapons are unique.
         public Weapon(int itemTypeID, string name, int price, int minDamage, int maxDamage) 
-            : base(itemTypeID, name, price)
+            : base(itemTypeID, name, price, true)
         {
             MinimumDamage = minDamage;
             MaximumDamage = maxDamage;

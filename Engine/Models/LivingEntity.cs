@@ -58,6 +58,8 @@ namespace Engine.Models
         //ObservableCollection handles all the notifications
         public ObservableCollection<GameItem> Inventory { get; set; }
 
+        public ObservableCollection<GroupedInventoryItem> GroupedInventory { get; set; }
+
         //Where is basically Filter
         //deferred execution - waits to execute the LINQ query until it is really needed,
         //ToList forces it to be needed
@@ -69,11 +71,29 @@ namespace Engine.Models
         protected LivingEntity()
         {
             Inventory = new ObservableCollection<GameItem>();
+            GroupedInventory = new ObservableCollection<GroupedInventoryItem>();
         }
 
         public void AddItemToInventory(GameItem item)
         {
             Inventory.Add(item);
+
+            //if item is unique, add a new groupedinventory item with quantity 1.
+            if (item.IsUnique)
+            {
+                GroupedInventory.Add(new GroupedInventoryItem(item, 1));
+            }
+            else
+            {
+                //Check if this is the first one of this item that the player has
+                if (!GroupedInventory.Any(gi => gi.Item.ItemTypeID == item.ItemTypeID))
+                {
+                    //quantity 0 because next line adds 1 to quantity
+                    GroupedInventory.Add(new GroupedInventoryItem(item, 0));
+                }
+
+                GroupedInventory.First(gi => gi.Item.ItemTypeID == item.ItemTypeID).Quantity++;
+            }
 
             OnPropertyChanged(nameof(Weapons));
         }
@@ -81,6 +101,25 @@ namespace Engine.Models
         public void RemoveItemFromInventory(GameItem item)
         {
             Inventory.Remove(item);
+
+            //get the first item from groupinventory where item id matches item id of item we want to remove
+            GroupedInventoryItem groupedInventoryItemToRemove =
+                GroupedInventory.FirstOrDefault(gi => gi.Item == item);
+
+            if (groupedInventoryItemToRemove != null) //should never be null but good to check
+            {
+                //does object have quantity of 1? 
+                //if so, completely remove item from groupedinventory.
+                if (groupedInventoryItemToRemove.Quantity == 1)
+                {
+                    GroupedInventory.Remove(groupedInventoryItemToRemove);
+                }
+                else
+                {
+                    //decrease quantity by 1
+                    groupedInventoryItemToRemove.Quantity--;
+                }
+            }
 
             OnPropertyChanged(nameof(Weapons));
         }

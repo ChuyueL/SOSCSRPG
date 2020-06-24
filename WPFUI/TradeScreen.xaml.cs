@@ -36,28 +36,30 @@ namespace WPFUI
             //Figure out what row the button was on. 
             //sender=what sent the event (the button). The button is part of a row so get its data context
             //and convert it to a GameItem (as each row should be a GameItem).
-            GameItem item = ((FrameworkElement)sender).DataContext as GameItem;
+            GroupedInventoryItem groupedInventoryItem = 
+                ((FrameworkElement)sender).DataContext as GroupedInventoryItem;
 
             //If we were able to convert the raiser of the event into a GameItem
-            if (item != null)
+            if (groupedInventoryItem != null)
             {
-                Session.CurrentPlayer.Gold += item.Price;
-                Session.CurrentTrader.AddItemToInventory(item);
-                Session.CurrentPlayer.RemoveItemFromInventory(item);
+                Session.CurrentPlayer.Gold += groupedInventoryItem.Item.Price;
+                Session.CurrentTrader.AddItemToInventory(groupedInventoryItem.Item);
+                Session.CurrentPlayer.RemoveItemFromInventory(groupedInventoryItem.Item);
             }
         }
 
         private void OnClick_Buy(object sender, RoutedEventArgs e)
         {
-            GameItem item = ((FrameworkElement)sender).DataContext as GameItem;
+            GroupedInventoryItem groupedInventoryItem = 
+                ((FrameworkElement)sender).DataContext as GroupedInventoryItem;
             
-            if (item != null)
+            if (groupedInventoryItem != null)
             {
-                if (Session.CurrentPlayer.Gold >= item.Price)
+                if (Session.CurrentPlayer.Gold >= groupedInventoryItem.Item.Price)
                 {
-                    Session.CurrentPlayer.Gold -= item.Price;
-                    Session.CurrentTrader.RemoveItemFromInventory(item);
-                    Session.CurrentPlayer.AddItemToInventory(item);
+                    Session.CurrentPlayer.Gold -= groupedInventoryItem.Item.Price;
+                    Session.CurrentTrader.RemoveItemFromInventory(groupedInventoryItem.Item);
+                    Session.CurrentPlayer.AddItemToInventory(groupedInventoryItem.Item);
                 }
                 else
                 {
