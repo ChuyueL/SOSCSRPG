@@ -44,8 +44,12 @@ namespace Engine.Models
 
         public ObservableCollection<QuestStatus> Quests { get; set; }
 
-        public Player()
+        public Player(string name, string characterClass, int experiencePoints,
+            int maximumHitPoints, int currentHitPoints, int gold) :
+            base(name, maximumHitPoints, currentHitPoints, gold)
         {
+            CharacterClass = characterClass;
+            ExperiencePoints = experiencePoints;
             //When player moves to a new location, check whether location has any quests.
             //Then check if player doesn't have quests from that location yet.
             //Any quest player doesn't have yet will be added to Quests.
