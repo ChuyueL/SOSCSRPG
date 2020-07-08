@@ -15,6 +15,7 @@ namespace Engine.Models
         private int _currentHitPoints;
         private int _maximumHitPoints;
         private int _gold;
+        private int _level;
 
         //private set = can only set the value inside LivingEntity class
         public string Name
@@ -37,10 +38,11 @@ namespace Engine.Models
             }
         }
 
+        //protected so player class can change maximumhitpoints when level increases
         public int MaximumHitPoints
         {
             get { return _maximumHitPoints; }
-            private set
+            protected set
             {
                 _maximumHitPoints = value;
                 OnPropertyChanged(nameof(MaximumHitPoints));
@@ -54,6 +56,18 @@ namespace Engine.Models
             {
                 _gold = value;
                 OnPropertyChanged(nameof(Gold));
+            }
+        }
+
+        //protected = can set value inside livingentity class, or from child classes. Player class needs access
+        //to this property.
+        public int Level
+        {
+            get { return _level; }
+            protected set
+            {
+                _level = value;
+                OnPropertyChanged(nameof(Level));
             }
         }
 
@@ -75,12 +89,13 @@ namespace Engine.Models
 
         //protected = can only be seen the child classes
         //limits the ability to instantiate LivingEntity objects
-        protected LivingEntity(string name, int maximumHitPoints, int currentHitPoints, int gold)
+        protected LivingEntity(string name, int maximumHitPoints, int currentHitPoints, int gold, int level = 1)
         {
             Name = name;
             MaximumHitPoints = maximumHitPoints;
             CurrentHitPoints = currentHitPoints;
             Gold = gold;
+            Level = level;
             
             Inventory = new ObservableCollection<GameItem>();
             GroupedInventory = new ObservableCollection<GroupedInventoryItem>();

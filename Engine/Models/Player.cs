@@ -13,7 +13,6 @@ namespace Engine.Models
     {
         private string _characterClass;
         private int _experiencePoints; //private backing variable
-        private int _level;
 
         public string CharacterClass 
         { 
@@ -27,22 +26,17 @@ namespace Engine.Models
 
         public int ExperiencePoints { //property
             get { return _experiencePoints; }
-            set { 
+            private set 
+            { 
                 _experiencePoints = value;
                 OnPropertyChanged(nameof(ExperiencePoints));
-            }
-        }
-        public int Level 
-        { 
-            get { return _level; }
-            set 
-            { 
-                _level = value;
-                OnPropertyChanged(nameof(Level));
+                SetLevelAndMaximumHitPoints();
             }
         }
 
         public ObservableCollection<QuestStatus> Quests { get; set; }
+
+        public event EventHandler OnLeveledUp;
 
         public Player(string name, string characterClass, int experiencePoints,
             int maximumHitPoints, int currentHitPoints, int gold) :
@@ -74,6 +68,27 @@ namespace Engine.Models
             //If we get through all the items in the list and we haven't returned false for any,
             //player has enough items so return true.
             return true;
+        }
+
+        public void AddExperience(int experiencePoints)
+        {
+            ExperiencePoints += experiencePoints;
+        }
+
+        //Called any time player's experience points changes 
+        private void SetLevelAndMaximumHitPoints()
+        {
+            int originalLevel = Level;
+
+            //Integer so rounds down
+            Level = (ExperiencePoints / 100) + 1;
+
+            if (Level != originalLevel)
+            {
+                MaximumHitPoints = Level * 10;
+
+                OnLeveledUp?.Invoke(this, System.EventArgs.Empty);
+            }
         }
     }
 }
