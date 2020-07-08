@@ -155,8 +155,12 @@ namespace Engine.Models
             Inventory.Remove(item);
 
             //get the first item from groupinventory where item id matches item id of item we want to remove
-            GroupedInventoryItem groupedInventoryItemToRemove =
-                GroupedInventory.FirstOrDefault(gi => gi.Item == item);
+            //If item we want to remove is unique, we have to find that exact matching item
+            //If not, there's no distinction between the individuzl items.
+            //This is a ternary operator - if first part evaluates to true, the first statement is executed.
+            GroupedInventoryItem groupedInventoryItemToRemove = item.IsUnique ?
+                GroupedInventory.FirstOrDefault(gi => gi.Item == item) :
+                GroupedInventory.FirstOrDefault(gi => gi.Item.ItemTypeID == item.ItemTypeID);
 
             if (groupedInventoryItemToRemove != null) //should never be null but good to check
             {
