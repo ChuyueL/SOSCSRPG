@@ -21,7 +21,7 @@ namespace Engine.ViewModels
         private Monster _currentMonster;
         private Trader _currentTrader;
 
-        public World CurrentWorld { get; set; }
+        public World CurrentWorld { get; }
         public Player CurrentPlayer 
         { 
             get { return _currentPlayer; } 
@@ -57,7 +57,7 @@ namespace Engine.ViewModels
                 _currentLocation = value;
 
                 //uses OnPropertyChanged code of BaseNotificationClass.
-                OnPropertyChanged(nameof(CurrentLocation)); //uses name of property
+                OnPropertyChanged(); //uses name of property
                 OnPropertyChanged(nameof(HasLocationToNorth));
                 OnPropertyChanged(nameof(HasLocationToEast));
                 OnPropertyChanged(nameof(HasLocationToSouth));
@@ -95,7 +95,7 @@ namespace Engine.ViewModels
                     RaiseMessage("");
                     RaiseMessage($"You see a {CurrentMonster.Name} here!");
                 }
-                OnPropertyChanged(nameof(CurrentMonster));
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(HasMonster));
             }
         }
@@ -107,7 +107,7 @@ namespace Engine.ViewModels
             {
                 _currentTrader = value;
 
-                OnPropertyChanged(nameof(CurrentTrader));
+                OnPropertyChanged();
                 OnPropertyChanged(nameof(HasTrader));
             }
         }

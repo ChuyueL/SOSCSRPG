@@ -8,8 +8,8 @@ namespace Engine.Models
 {
     public class Weapon : GameItem
     {
-        public int MinimumDamage { get; set; }
-        public int MaximumDamage { get; set; }
+        public int MinimumDamage { get; }
+        public int MaximumDamage { get; }
         //when we instantiate a weapon object, it takes the values we passed in and sends them to the base class.
         //This sets the properties.
         //All weapons are unique.

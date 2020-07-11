@@ -24,7 +24,7 @@ namespace Engine.Models
             private set
             {
                 _name = value;
-                OnPropertyChanged(nameof(Name));
+                OnPropertyChanged();
             }
         }
 
@@ -34,7 +34,7 @@ namespace Engine.Models
             private set
             {
                 _currentHitPoints = value;
-                OnPropertyChanged(nameof(CurrentHitPoints));
+                OnPropertyChanged();
             }
         }
 
@@ -45,7 +45,7 @@ namespace Engine.Models
             protected set
             {
                 _maximumHitPoints = value;
-                OnPropertyChanged(nameof(MaximumHitPoints));
+                OnPropertyChanged();
             }
         }
 
@@ -55,7 +55,7 @@ namespace Engine.Models
             private set
             {
                 _gold = value;
-                OnPropertyChanged(nameof(Gold));
+                OnPropertyChanged();
             }
         }
 
@@ -67,14 +67,15 @@ namespace Engine.Models
             protected set
             {
                 _level = value;
-                OnPropertyChanged(nameof(Level));
+                OnPropertyChanged();
             }
         }
 
         //ObservableCollection handles all the notifications
-        public ObservableCollection<GameItem> Inventory { get; set; }
+        //No setters as we will never reset these properties, we will only change values in the existing collections.
+        public ObservableCollection<GameItem> Inventory { get; }
 
-        public ObservableCollection<GroupedInventoryItem> GroupedInventory { get; set; }
+        public ObservableCollection<GroupedInventoryItem> GroupedInventory { get; }
 
         //Where is basically Filter
         //deferred execution - waits to execute the LINQ query until it is really needed,

@@ -6,10 +6,22 @@ using System.Threading.Tasks;
 
 namespace Engine.Models
 {
-    public class QuestStatus
+    public class QuestStatus : BaseNotificationClass
     {
-        public Quest PlayerQuest { get; set; } //holds quest
-        public bool IsCompleted { get; set; }
+        private bool _isCompleted;
+
+        //No setter as the only time this property should be set is in the constructor
+        public Quest PlayerQuest { get; } //holds quest
+
+        public bool IsCompleted 
+        { 
+            get { return _isCompleted; }
+            set
+            {
+                _isCompleted = value;
+                OnPropertyChanged();
+            }
+        }
 
         public QuestStatus(Quest quest)
         {
