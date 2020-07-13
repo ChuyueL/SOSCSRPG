@@ -321,7 +321,7 @@ namespace Engine.ViewModels
         private void OnCurrentPlayerKilled(object sender, System.EventArgs eventArgs)
         {
             RaiseMessage("");
-            RaiseMessage($"The {CurrentMonster.Name} killed you.");
+            RaiseMessage("You have been killed.");
 
             //Move player to home
             CurrentLocation = CurrentWorld.LocationAt(0, -1);
