@@ -16,38 +16,35 @@ namespace Engine.Factories
         //The first time anyone uses anything in ItemFactory class, run this function.
         //Loads up list of game items.
         static ItemFactory()
-        {          
-            _standardGameItems.Add(new Weapon(1001, "Pointy Stick", 1, 1, 2));
-            _standardGameItems.Add(new Weapon(1002, "Rusty Sword", 5, 1, 3));
-            _standardGameItems.Add(new GameItem(9001, "Snake fang", 1));
-            _standardGameItems.Add(new GameItem(9002, "Snakeskin", 2));
-            _standardGameItems.Add(new GameItem(9003, "Rat tail", 1));
-            _standardGameItems.Add(new GameItem(9004, "Rat fur", 2));
-            _standardGameItems.Add(new GameItem(9005, "Spider fang", 1));
-            _standardGameItems.Add(new GameItem(9006, "Spider silk", 2));
+        {
+            BuildWeapon(1001, "Pointy Stick", 1, 1, 2);
+            BuildWeapon(1002, "Rusty Sword", 5, 1, 3);
+
+            BuildMiscellaneousItem(9001, "Snake fang", 1);
+            BuildMiscellaneousItem(9002, "Snakeskin", 2);
+            BuildMiscellaneousItem(9003, "Rat tail", 1);
+            BuildMiscellaneousItem(9004, "Rat fur", 2);
+            BuildMiscellaneousItem(9005, "Spider fang", 1);
+            BuildMiscellaneousItem(9006, "Spider silk", 2);
         }
 
         public static GameItem CreateGameItem(int itemTypeID)
         {
             //use LINQ to find first item that has ItemTypeID property matching the itemTypeID passed to the function
             //If cannot find item then use default value (null)
-            GameItem standardItem = _standardGameItems.FirstOrDefault(item => item.ItemTypeID == itemTypeID);
+            return _standardGameItems.FirstOrDefault(item => item.ItemTypeID == itemTypeID)?.Clone();
+        }
 
-            //create a copy of the object (cloning), to allow unique individual objects
-            if (standardItem != null)
-            {
-                //If item is a weapon, then we want Clone() fn of Weapon class, to include
-                //the extra weapon information
-                if (standardItem is Weapon)
-                {
-                    //cast item as Weapon and call its clone function
-                    return (standardItem as Weapon).Clone();
-                }
-                return standardItem.Clone();
-            }
+        private static void BuildMiscellaneousItem(int id, string name, int price)
+        {
+            _standardGameItems.Add(new GameItem(GameItem.ItemCategory.Miscellaneous, id, name, price));
+        }
 
-            //we should never return null but it's in there just in case.
-            return null;
+        private static void BuildWeapon(int id, string name, int price,
+                                        int minimumDamage, int maximumDamage)
+        {
+            _standardGameItems.Add(new GameItem(GameItem.ItemCategory.Weapon, id, name, price,
+                                    true, minimumDamage, maximumDamage));
         }
     }
 }

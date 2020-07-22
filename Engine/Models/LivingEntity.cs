@@ -81,7 +81,7 @@ namespace Engine.Models
         //deferred execution - waits to execute the LINQ query until it is really needed,
         //ToList forces it to be needed
         public List<GameItem> Weapons =>
-            Inventory.Where(i => i is Weapon).ToList();
+            Inventory.Where(i => i.Category == GameItem.ItemCategory.Weapon).ToList();
 
         public bool IsDead => CurrentHitPoints <= 0;
 
