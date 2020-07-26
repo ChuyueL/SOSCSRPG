@@ -16,6 +16,7 @@ namespace Engine.Models
         private int _maximumHitPoints;
         private int _gold;
         private int _level;
+        private GameItem _currentWeapon;
 
         //private set = can only set the value inside LivingEntity class
         public string Name
@@ -71,6 +72,27 @@ namespace Engine.Models
             }
         }
 
+        public GameItem CurrentWeapon
+        {
+            get { return _currentWeapon; }
+            set
+            {
+                if (_currentWeapon != null)
+                {
+                    _currentWeapon.Action.OnActionPerformed -= RaiseActionPerformedEvent;
+                }
+
+                _currentWeapon = value;
+
+                if (_currentWeapon != null)
+                {
+                    //LivingEntity subscribes to OnActionPerformed event and will raise its own event for UI to watch
+                    _currentWeapon.Action.OnActionPerformed += RaiseActionPerformedEvent;
+                }
+
+                OnPropertyChanged();
+            }
+        }
         //ObservableCollection handles all the notifications
         //No setters as we will never reset these properties, we will only change values in the existing collections.
         public ObservableCollection<GameItem> Inventory { get; }
@@ -85,6 +107,10 @@ namespace Engine.Models
 
         public bool IsDead => CurrentHitPoints <= 0;
 
+        //Command design pattern - UI watches for actions performed on livingentity (player)
+        //Player looks for actions performed by the weapon/other gameitem
+        //When gameitem raises an action message, player catches it and uses OnActionPerformed.
+        public event EventHandler<string> OnActionPerformed;
         //Other objects can subscribe to this event so they will know when the livingentity is killed
         public event EventHandler OnKilled;
 
@@ -100,6 +126,11 @@ namespace Engine.Models
             
             Inventory = new ObservableCollection<GameItem>();
             GroupedInventory = new ObservableCollection<GroupedInventoryItem>();
+        }
+
+        public void UseCurrentWeaponOn(LivingEntity target)
+        {
+            CurrentWeapon.PerformAction(this, target);
         }
 
         public void TakeDamage(int hitPointsofDamage)
@@ -200,6 +231,10 @@ namespace Engine.Models
             //If there are any subscribers to OnKilled event, raise the event. Any subscribers will know if 
             //a livingentity gets killed 
             OnKilled?.Invoke(this, new System.EventArgs());
+        }
+        private void RaiseActionPerformedEvent(object sender, string result)
+        {
+            OnActionPerformed?.Invoke(this, result);
         }
     }
 

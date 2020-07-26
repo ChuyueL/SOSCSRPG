@@ -29,6 +29,7 @@ namespace Engine.ViewModels
             {
                 if (_currentPlayer != null)
                 {
+                    _currentPlayer.OnActionPerformed -= OnCurrentPlayerPerformedAction;
                     _currentPlayer.OnLeveledUp -= OnCurrentPlayerLeveledUp;
 
                     //if we already have a currentplayer object, unsubscribe to event handler of old player.
@@ -42,6 +43,7 @@ namespace Engine.ViewModels
 
                 if (_currentPlayer != null)
                 {
+                    _currentPlayer.OnActionPerformed += OnCurrentPlayerPerformedAction;
                     _currentPlayer.OnLeveledUp += OnCurrentPlayerLeveledUp;
 
                     //on new currentplayer, subscribe to their OnKilled event and run OnCurrentPlayerKilled when event raised
@@ -112,7 +114,6 @@ namespace Engine.ViewModels
             }
         }
 
-        public GameItem CurrentWeapon { get; set; }
 
         public bool HasLocationToNorth => 
             CurrentWorld.LocationAt(CurrentLocation.XCoordinate, CurrentLocation.YCoordinate + 1) != null;
@@ -275,24 +276,13 @@ namespace Engine.ViewModels
         {
             //Guard clause - checks that the values needed in the rest of the function exist.
             //also called 'early exit'
-            if (CurrentWeapon == null)
+            if (CurrentPlayer.CurrentWeapon == null)
             {
                 RaiseMessage("You must select a weapon, to attack.");
                 return; 
             }
 
-            //Determine damage dealt to monster
-            int damageToMonster = RandomNumberGenerator.NumberBetween(CurrentWeapon.MinimumDamage, CurrentWeapon.MaximumDamage);
-
-            if (damageToMonster == 0)
-            {
-                RaiseMessage($"You missed the {CurrentMonster.Name}.");
-            }
-            else
-            {
-                RaiseMessage($"You hit the {CurrentMonster.Name} for {damageToMonster} points.");
-                CurrentMonster.TakeDamage(damageToMonster);
-            }
+            CurrentPlayer.UseCurrentWeaponOn(CurrentMonster);
 
             //If monster is dead, collect rewards and loot
             if (CurrentMonster.IsDead)
@@ -316,6 +306,11 @@ namespace Engine.ViewModels
                 }
 
             }
+        }
+
+        private void OnCurrentPlayerPerformedAction(object sender, string result)
+        {
+            RaiseMessage(result);
         }
 
         private void OnCurrentPlayerKilled(object sender, System.EventArgs eventArgs)
